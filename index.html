@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"
+        integrity="sha512-0zGLOFv/+OQ6YfVCSGDQWhrDRx0ONmBqWvs3gI4olm8i6xtKoG1FhEnB4eTaWCVnojyfUDgE8Izeln+mAJAkFA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+        </script>
+    <script>
+        let balls = [];
+
+        class Ball {
+            constructor() {
+                this.x = random(20, width - 20);
+                this.y = random(20, height - 20);
+                this.diameter = 40;
+                this.speedX = random(-5, 5);
+                this.speedY = random(-5, 5);
+                this.moving = true;
+                this.directionX = random(0, 2 * PI);
+                this.directionY = random(0, 2 * PI);
+            }
+
+            move() {
+                if (this.moving) {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+
+                    // Rebote en paredes
+                    if (this.x <= this.diameter / 2 || this.x >= width - this.diameter / 2) {
+                        this.speedX *= -1;
+                    }
+                    if (this.y <= this.diameter / 2 || this.y >= height - this.diameter / 2) {
+                        this.speedY *= -1;
+                    }
+                }
+            }
+
+            display() {
+                fill(this.moving ? 'blue' : 'red');
+                circle(this.x, this.y, this.diameter);
+            }
+
+            contains(px, py) {
+                let d = dist(px, py, this.x, this.y);
+                return d < this.diameter / 2;
+            }
+
+            toggleMovement() {
+                this.moving = !this.moving;
+            }
+        }
+
+        function setup() {
+            createCanvas(600, 400);
+            for (let i = 0; i < 5; i++) {
+                balls.push(new Ball());
+            }
+        }
+
+        function draw() {
+            background(220);
+            for (let ball of balls) {
+                ball.move();
+                ball.display();
+            }
+        }
+
+        function mousePressed() {
+            for (let ball of balls) {
+                if (ball.contains(mouseX, mouseY)) {
+                    ball.toggleMovement();
+                    break;
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
